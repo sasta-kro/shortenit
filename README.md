@@ -99,6 +99,16 @@ A modern, full-featured URL shortening and analytics platform built with Spring 
    PROTECTED_ADMIN_EMAIL=admin@au.edu
    ```
 
+   `JWT_SECRET` is required for authentication when running with Docker Compose
+   and must contain at least 32 characters. Generate a suitable value with:
+
+   ```bash
+   openssl rand -base64 32
+   ```
+
+   After changing `.env`, recreate the containers with `make dev-down` followed
+   by `make dev-up` so the backend receives the new value.
+
 4. **Download GeoIP database**
    ```bash
    make geoip-prepare
@@ -243,7 +253,7 @@ See `backend/erd_shorenit.png` for the full entity relationship diagram.
 Key application properties (configured via environment variables):
 
 - `APP_BASE_URL` - Base URL for short links
-- `JWT_SECRET` - Secret key for JWT signing (min 32 chars)
+- `JWT_SECRET` - Required secret key for JWT signing in Docker Compose (min 32 chars)
 - `MICROSOFT_CLIENT_ID` - Azure AD application ID
 - `MICROSOFT_CLIENT_SECRET` - Azure AD application secret
 - `CORS_ALLOWED_ORIGINS` - Comma-separated allowed origins
