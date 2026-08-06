@@ -153,7 +153,7 @@ export default function LinksPage() {
       await api.links.create({
         originalUrl: urlToShorten,
         code: customAlias || undefined,
-        title: newUrlTitle || fetchedTitle || fallbackTitle,
+        title: (newUrlTitle || fetchedTitle || fallbackTitle).slice(0, 200),
         expirationDays: expirationDays ? parseInt(expirationDays) : undefined,
       });
 
@@ -193,7 +193,7 @@ export default function LinksPage() {
 
         return api.links.create({ 
             originalUrl: url,
-            title: title,
+            title: title.slice(0, 200),
             expirationDays: expirationDays ? parseInt(expirationDays) : undefined
          });
       }));

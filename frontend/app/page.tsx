@@ -134,7 +134,7 @@ export default function Home() {
           },
           body: JSON.stringify({
             originalUrl: urlToShorten,
-            title: title || fetchedTitle || fallbackTitle,
+            title: (title || fetchedTitle || fallbackTitle).slice(0, 200),
           }),
         }
       );
