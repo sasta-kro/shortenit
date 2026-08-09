@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { api } from "@/lib/api";
 import { Url } from "@/lib/types";
 import { useAuth } from "@/components/auth-provider";
+import { buildShortUrl } from "@/lib/app-path";
 
 export default function LinksPage() {
   const { user } = useAuth();
@@ -105,7 +106,7 @@ export default function LinksPage() {
         id: link.id,
         originalUrl: link.originalUrl,
         shortCode: link.code || link.shortCode,
-        shortUrl: link.shortUrl || `${window.location.origin}/s/${link.code || link.shortCode}`,
+        shortUrl: link.shortUrl || buildShortUrl(window.location.origin, link.code || link.shortCode),
         clickCount: link.clickCount || 0,
         createdAt: link.createdAt,
         customAlias: link.customAlias,

@@ -6,6 +6,9 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        APP_BASE_PATH: ${APP_BASE_PATH:-}
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://backend:8080}
 
   backend:
     build:

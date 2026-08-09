@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator";
 
 
 import { api } from "@/lib/api";
+import { buildShortUrl } from "@/lib/app-path";
 import { LinkDetails } from "@/lib/types";
 
 export default function LinkDetailPage() {
@@ -250,7 +251,7 @@ export default function LinkDetailPage() {
                           </label>
                           <div className="flex shadow-sm rounded-md">
                              <div className="flex items-center px-4 bg-muted border border-r-0 rounded-l-md text-muted-foreground text-sm font-mono whitespace-nowrap">
-                                {new URL(link.shortUrl).origin}/s/
+                                {buildShortUrl(new URL(link.shortUrl).origin, "")}
                              </div>
                              <Input 
                                value={code} 

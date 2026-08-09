@@ -15,6 +15,8 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { appFetch } from "@/lib/api";
+import { buildShortUrl } from "@/lib/app-path";
 
 
 interface Url {
@@ -82,7 +84,7 @@ function QRCodesContent() {
     const fetchLinks = async () => {
       try {
         const token = localStorage.getItem("auth-token");
-        const response = await fetch(
+        const response = await appFetch(
           `/api/urls?page=0&size=1000`,
           {
             headers: {
@@ -97,7 +99,7 @@ function QRCodesContent() {
             shortCode: link.code || link.shortCode,
             shortUrl:
               link.shortUrl ||
-              `${typeof window !== "undefined" ? window.location.origin : ""}/s/${link.code || link.shortCode}  `,
+              buildShortUrl(window.location.origin, link.code || link.shortCode),
             originalUrl: link.originalUrl,
           }));
           

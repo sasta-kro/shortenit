@@ -8,6 +8,8 @@ import { Card } from "@/components/ui/card";
 import { Check, Copy, Link2, Sparkles, BarChart3, QrCode, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { appFetch } from "@/lib/api";
+import { buildShortUrl } from "@/lib/app-path";
 
 interface LinkItem {
   id: string;
@@ -42,7 +44,7 @@ export default function Home() {
   const fetchLinks = async () => {
     try {
       const token = localStorage.getItem("auth-token");
-      const response = await fetch(
+      const response = await appFetch(
         `/api/urls?page=0&size=5`,
         {
           headers: {
@@ -99,7 +101,7 @@ export default function Home() {
     
     try {
       // 1. Validate URL and fetch Title via internal API
-      const validationRes = await fetch("/internal/validate-url", {
+      const validationRes = await appFetch("/internal/validate-url", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url: urlToShorten }),
@@ -124,7 +126,7 @@ export default function Home() {
       })();
 
       // 2. Shorten (using correct POST /api/urls endpoint)
-      const response = await fetch(
+      const response = await appFetch(
         `/api/urls`,
         {
           method: "POST",
@@ -289,12 +291,12 @@ export default function Home() {
                           </span>
                           <div className="flex items-center gap-2">
                              <a 
-                               href={link.shortUrl || `${window.location.origin}/s/${link.shortCode}`}
+                               href={link.shortUrl || buildShortUrl(window.location.origin, link.shortCode)}
                                target="_blank"
                                rel="noopener noreferrer"
                                className="font-mono text-sm font-bold text-primary hover:underline hover:text-primary/80 truncate"
                              >
-                                {link.shortUrl ? link.shortUrl.replace(/^https?:\/\//, "") : `shortenit.freaks.dev/s/${link.shortCode}`}
+                                {(link.shortUrl || buildShortUrl(window.location.origin, link.shortCode)).replace(/^https?:\/\//, "")}
                              </a>
                              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-secondary text-secondary-foreground">
                                Active
@@ -310,7 +312,7 @@ export default function Home() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          onClick={() => handleCopy(link.shortUrl || `${window.location.origin}/${link.shortCode}`, link.id || link.shortCode)}
+                          onClick={() => handleCopy(link.shortUrl || buildShortUrl(window.location.origin, link.shortCode), link.id || link.shortCode)}
                           className={cn(
                             "h-9 w-9 rounded-lg transition-all hover:cursor-pointer", 
                             copiedId === (link.id || link.shortCode) ? "text-green-600 bg-green-50" : "text-muted-foreground hover:text-foreground"

@@ -10,11 +10,13 @@ import { Home, Link2, BarChart2, Settings, QrCode, LogOut } from "lucide-react";
 
 import { useAuth } from "@/components/auth-provider";
 import { ShieldCheck } from "lucide-react";
+import { withoutBasePath } from "@/lib/app-path";
 
 export default function MobileMenu() {
   const { user, logout } = useAuth();
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const appPathname = withoutBasePath(pathname || "/");
 
   const navItems = [
     { label: "Home", icon: <Home className="w-5 h-5" />, href: "/" },
@@ -65,7 +67,7 @@ export default function MobileMenu() {
           <nav className="flex flex-col p-2 space-y-1">
             {navItems.map((item) => {
               const isActive =
-                pathname === item.href || pathname.startsWith(item.href + "/");
+                appPathname === item.href || appPathname.startsWith(item.href + "/");
               return (
                 <Link
                   key={item.href}

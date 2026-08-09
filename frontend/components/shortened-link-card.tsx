@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { buildShortUrl, withBasePath } from "@/lib/app-path";
 
 interface ShortenedLinkCardProps {
   link: {
@@ -17,9 +18,10 @@ export default function ShortenedLinkCard({ link }: ShortenedLinkCardProps) {
   const [copied, setCopied] = useState(false);
   const [showQR, setShowQR] = useState(false);
 
-  const shortUrl = `${
-    typeof window !== "undefined" ? window.location.origin : ""
-  }/${link.shortCode}`;
+  const shortUrl =
+    typeof window !== "undefined"
+      ? buildShortUrl(window.location.origin, link.shortCode)
+      : "";
 
   const handleCopy = () => {
     navigator.clipboard.writeText(shortUrl);
@@ -78,7 +80,7 @@ export default function ShortenedLinkCard({ link }: ShortenedLinkCardProps) {
           <div className="pt-4 border-t border-border flex justify-center">
             <div className="bg-background p-4 rounded border border-border">
               <img
-                src={generateQRCode() || "/placeholder.svg"}
+                src={generateQRCode() || withBasePath("/placeholder.svg")}
                 alt={`QR code for ${shortUrl}`}
                 className="w-48 h-48"
               />

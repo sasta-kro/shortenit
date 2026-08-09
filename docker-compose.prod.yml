@@ -3,7 +3,7 @@
 
 services:
   frontend:
-    image: shortenit/frontend:latest
+    image: ${FRONTEND_IMAGE:-shortenit/frontend:latest}
 
   backend:
-    image: shortenit/backend:latest
+    image: ${BACKEND_IMAGE:-shortenit/backend:latest}

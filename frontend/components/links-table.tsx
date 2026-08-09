@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { buildShortUrl } from "@/lib/app-path";
 
 interface LinksTableProps {
   links: Array<{
@@ -22,12 +23,12 @@ interface LinksTableProps {
 
 export default function LinksTable({ links }: LinksTableProps) {
   const handleCopy = (shortCode: string) => {
-    const shortUrl = `${window.location.origin}/${shortCode}`;
+    const shortUrl = buildShortUrl(window.location.origin, shortCode);
     navigator.clipboard.writeText(shortUrl);
   };
 
   const handleOpen = (shortCode: string) => {
-    window.open(`${window.location.origin}/${shortCode}`, "_blank");
+    window.open(buildShortUrl(window.location.origin, shortCode), "_blank");
   };
 
   const formatDate = (dateString: string) => {

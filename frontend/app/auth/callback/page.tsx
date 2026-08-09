@@ -4,6 +4,7 @@ import { useEffect, Suspense, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/components/auth-provider";
 import { User, Role } from "@/lib/types";
+import { withBasePath } from "@/lib/app-path";
 
 function CallbackContent() {
   const router = useRouter();
@@ -38,7 +39,7 @@ function CallbackContent() {
       login(tempUser, accessToken, refreshToken || undefined);
       // Login function redirects to /, but we rely on AuthProvider to check /api/auth/me
       // Force redirect just in case
-      window.location.href = "/";
+      window.location.href = withBasePath("/");
     } else if (!accessToken) {
         // Only error if we really don't have tokens and we haven't processed yet
          console.error("Missing tokens in callback URL");
