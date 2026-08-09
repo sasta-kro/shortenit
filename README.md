@@ -162,13 +162,16 @@ same value at runtime. For a path deployment, use a frontend image built with
 that path and select the production images in `.env` when needed:
 
 ```bash
-FRONTEND_IMAGE=your-dockerhub-name/frontend:latest
-BACKEND_IMAGE=your-dockerhub-name/backend:latest
+FRONTEND_IMAGE=your-dockerhub-name/shortenit-frontend:latest
+BACKEND_IMAGE=your-dockerhub-name/shortenit-backend:latest
 ```
 
 The Docker publishing workflow reads `APP_BASE_PATH` and
-`DOCKERHUB_NAMESPACE` from GitHub repository variables. It uses the existing
-`DOCKERHUB_TOKEN` secret. A manual workflow run can override the frontend path.
+`DOCKERHUB_NAMESPACE` from GitHub repository variables. Optional
+`FRONTEND_IMAGE` and `BACKEND_IMAGE` repository variables select the complete
+image names; they default to `shortenit/frontend` and `shortenit/backend`. The
+workflow uses the existing `DOCKERHUB_TOKEN` secret. A manual workflow run can
+override the frontend path.
 
 When using `/shortenit`, register this Microsoft Entra redirect URI:
 

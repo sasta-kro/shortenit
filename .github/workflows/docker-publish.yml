@@ -14,8 +14,8 @@ on:
 env:
   REGISTRY: docker.io
   DOCKERHUB_NAMESPACE: ${{ vars.DOCKERHUB_NAMESPACE || 'shortenit' }}
-  BACKEND_IMAGE: ${{ vars.DOCKERHUB_NAMESPACE || 'shortenit' }}/backend
-  FRONTEND_IMAGE: ${{ vars.DOCKERHUB_NAMESPACE || 'shortenit' }}/frontend
+  BACKEND_IMAGE: ${{ vars.BACKEND_IMAGE || 'shortenit/backend' }}
+  FRONTEND_IMAGE: ${{ vars.FRONTEND_IMAGE || 'shortenit/frontend' }}
 
 jobs:
   build-backend:
