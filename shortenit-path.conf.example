@@ -1,5 +1,6 @@
 # Add these locations inside the existing HTTPS server block for life.au.edu.
-# This example assumes APP_BASE_PATH=/shortenit.
+# This example assumes APP_BASE_PATH=/shortenit,
+# FRONTEND_HOST_PORT=3100 and BACKEND_HOST_PORT=8180.
 
 location = /shortenit {
   return 308 /shortenit/;
@@ -8,22 +9,22 @@ location = /shortenit {
 # Preserve the complete URI when proxying to Spring Boot. The proxy_pass
 # directives intentionally have no trailing URI slash.
 location ^~ /shortenit/api/ {
-  proxy_pass http://127.0.0.1:8080;
+  proxy_pass http://127.0.0.1:8180;
   include proxy_params;
 }
 
 location ^~ /shortenit/oauth2/ {
-  proxy_pass http://127.0.0.1:8080;
+  proxy_pass http://127.0.0.1:8180;
   include proxy_params;
 }
 
 location ^~ /shortenit/login/ {
-  proxy_pass http://127.0.0.1:8080;
+  proxy_pass http://127.0.0.1:8180;
   include proxy_params;
 }
 
 location ^~ /shortenit/s/ {
-  proxy_pass http://127.0.0.1:8080;
+  proxy_pass http://127.0.0.1:8180;
   include proxy_params;
   proxy_buffering off;
   proxy_redirect off;
@@ -31,7 +32,7 @@ location ^~ /shortenit/s/ {
 
 # Next.js receives the base path unchanged, including /shortenit/_next assets.
 location ^~ /shortenit/ {
-  proxy_pass http://127.0.0.1:3000;
+  proxy_pass http://127.0.0.1:3100;
   include proxy_params;
   proxy_http_version 1.1;
   proxy_set_header Upgrade $http_upgrade;
