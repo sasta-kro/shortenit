@@ -173,6 +173,10 @@ image names; they default to `shortenit/frontend` and `shortenit/backend`. The
 workflow uses the existing `DOCKERHUB_TOKEN` secret. A manual workflow run can
 override the frontend path.
 
+The production Compose override binds the frontend and backend only to the
+host loopback interface for a local reverse proxy. PostgreSQL is available only
+inside the private Compose network and is not published on the host.
+
 When using `/shortenit`, register this Microsoft Entra redirect URI:
 
 ```text
