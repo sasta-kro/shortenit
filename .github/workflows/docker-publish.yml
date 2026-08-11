@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  # Allow manual publish in repo and optionally override the frontend's build-time base path.
   workflow_dispatch:
     inputs:
       app_base_path:
@@ -11,6 +12,7 @@ on:
         required: false
         default: ""
 
+# original upstream image names are defaults. Forks can override them by using repository variables
 env:
   REGISTRY: docker.io
   DOCKERHUB_NAMESPACE: ${{ vars.DOCKERHUB_NAMESPACE || 'shortenit' }}

@@ -1,5 +1,6 @@
-# Add these locations inside the existing HTTPS server block for life.au.edu.
-# This example assumes APP_BASE_PATH=/shortenit.
+# Add these locations inside an existing HTTPS server block.
+# This example assumes APP_BASE_PATH=/shortenit and the default production
+# host ports. Update the proxy destinations if those ports are overridden.
 
 location = /shortenit {
   return 308 /shortenit/;

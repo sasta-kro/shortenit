@@ -2,8 +2,16 @@
 # Usage: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 
 services:
+  postgres:
+    # The backend reaches PostgreSQL over the private Compose network.
+    ports: !reset []
+
   frontend:
     image: ${FRONTEND_IMAGE:-shortenit/frontend:latest}
+    ports: !override
+      - "127.0.0.1:${FRONTEND_HOST_PORT:-3000}:3000"
 
   backend:
     image: ${BACKEND_IMAGE:-shortenit/backend:latest}
+    ports: !override
+      - "127.0.0.1:${BACKEND_HOST_PORT:-8080}:8080"

@@ -164,6 +164,8 @@ that path and select the production images in `.env` when needed:
 ```bash
 FRONTEND_IMAGE=your-dockerhub-name/shortenit-frontend:latest
 BACKEND_IMAGE=your-dockerhub-name/shortenit-backend:latest
+FRONTEND_HOST_PORT=3000
+BACKEND_HOST_PORT=8080
 ```
 
 The Docker publishing workflow reads `APP_BASE_PATH` and
@@ -172,6 +174,12 @@ The Docker publishing workflow reads `APP_BASE_PATH` and
 image names; they default to `shortenit/frontend` and `shortenit/backend`. The
 workflow uses the existing `DOCKERHUB_TOKEN` secret. A manual workflow run can
 override the frontend path.
+
+The production Compose override binds the frontend and backend only to the
+host loopback interface for a local reverse proxy. `FRONTEND_HOST_PORT` and
+`BACKEND_HOST_PORT` can change those host-side ports when they conflict with
+other services. PostgreSQL is available only inside the private Compose network
+and is not published on the host.
 
 When using `/shortenit`, register this Microsoft Entra redirect URI:
 
