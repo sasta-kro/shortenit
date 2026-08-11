@@ -91,7 +91,7 @@ public class SecurityConfig {
                 .exceptionHandling(exceptions -> exceptions
                         .authenticationEntryPoint((request, response, authException) -> {
                             // For API requests, return JSON 401 instead of redirecting
-                            if (request.getRequestURI().startsWith("/api/")) {
+                            if (RequestPathUtils.getApplicationPath(request).startsWith("/api/")) {
                                 response.setStatus(401);
                                 response.setContentType("application/json");
                                 response.getWriter().write(
@@ -102,7 +102,9 @@ public class SecurityConfig {
                             } else {
                                 // For web requests, redirect to OAuth login if available
                                 if (microsoftClientId != null && !microsoftClientId.isEmpty()) {
-                                    response.sendRedirect("/oauth2/authorization/microsoft");
+                                    response.sendRedirect(
+                                            request.getContextPath() + "/oauth2/authorization/microsoft"
+                                    );
                                 } else {
                                     response.setStatus(401);
                                     response.getWriter().write("Authentication required");

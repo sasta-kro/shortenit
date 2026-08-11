@@ -4,7 +4,8 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 
 import { User } from "@/lib/types";
-import { api } from "@/lib/api";
+import { api, appFetch } from "@/lib/api";
+import { withoutBasePath } from "@/lib/app-path";
 
 interface AuthContextType {
   user: User | null;
@@ -21,6 +22,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
+  const appPathname = withoutBasePath(pathname || "/");
 
   useEffect(() => {
     // Avoid synchronous setState warning
@@ -34,7 +36,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       try {
-        const response = await fetch("/api/auth/me", {
+        const response = await appFetch("/api/auth/me", {
             headers: {
                 "Authorization": `Bearer ${token}`
             }
@@ -91,7 +93,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!mounted || isLoading) return;
 
-    if (pathname?.startsWith("/auth")) {
+    if (appPathname.startsWith("/auth")) {
       if (user) {
         // If already logged in and on auth page, redirect to home
         router.push("/");
@@ -102,7 +104,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!user) {
       router.push("/auth");
     }
-  }, [user, isLoading, pathname, router, mounted]);
+  }, [user, isLoading, appPathname, router, mounted]);
 
   if (!mounted || isLoading) {
     return (
@@ -114,7 +116,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Prevent rendering of protected content if user is not authenticated
   // This avoids the "flash of unauthenticated content" before the redirect happens
-  if (!user && !pathname?.startsWith("/auth")) {
+  if (!user && !appPathname.startsWith("/auth")) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background">
         <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>

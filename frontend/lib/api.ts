@@ -1,4 +1,5 @@
 import { Url, LinkDetails, AnalyticsData, User } from "./types";
+import { withBasePath } from "./app-path";
 
 const API_BASE_URL = typeof window === "undefined"
   ? (process.env.NEXT_PUBLIC_API_BASE_URL || "")
@@ -10,6 +11,26 @@ interface RequestOptions {
   method?: RequestMethod;
   body?: any;
   headers?: Record<string, string>;
+}
+
+function resolveRequestUrl(endpoint: string): string {
+  if (endpoint.startsWith("http://") || endpoint.startsWith("https://")) {
+    return endpoint;
+  }
+
+  const appPath = withBasePath(endpoint);
+  if (typeof window === "undefined" && !endpoint.startsWith("/internal")) {
+    return `${API_BASE_URL}${appPath}`;
+  }
+
+  return appPath;
+}
+
+export function appFetch(
+  endpoint: string,
+  init?: RequestInit,
+): Promise<Response> {
+  return fetch(resolveRequestUrl(endpoint), init);
 }
 
 async function fetchClient<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
@@ -26,10 +47,7 @@ async function fetchClient<T>(endpoint: string, options: RequestOptions = {}): P
     ...(body && { body: JSON.stringify(body) }),
   };
 
-  let url = endpoint;
-  if (!endpoint.startsWith("http") && !endpoint.startsWith("/internal")) {
-    url = `${API_BASE_URL}${endpoint}`;
-  }
+  const url = resolveRequestUrl(endpoint);
 
   let response = await fetch(url, config);
 
@@ -38,8 +56,7 @@ async function fetchClient<T>(endpoint: string, options: RequestOptions = {}): P
     const refreshToken = typeof window !== "undefined" ? localStorage.getItem("refresh-token") : null;
     if (refreshToken) {
       try {
-        const refreshUrl = `${API_BASE_URL}/api/auth/refresh`;
-        const refreshResponse = await fetch(refreshUrl, {
+        const refreshResponse = await appFetch("/api/auth/refresh", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ refreshToken }),
@@ -70,7 +87,7 @@ async function fetchClient<T>(endpoint: string, options: RequestOptions = {}): P
           localStorage.removeItem("refresh-token");
           localStorage.removeItem("auth-user");
           if (typeof window !== "undefined") {
-            window.location.href = "/auth";
+            window.location.href = withBasePath("/auth");
           }
         }
       } catch {

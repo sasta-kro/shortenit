@@ -30,6 +30,7 @@ import {
   Cell,
   Legend,
 } from "recharts";
+import { appFetch } from "@/lib/api";
 
 interface DeviceStats {
     mobile: number;
@@ -71,7 +72,7 @@ export default function AnalyticsPage() {
     const fetchAnalytics = async () => {
       try {
         const token = localStorage.getItem("auth-token");
-        const response = await fetch(
+        const response = await appFetch(
           `/api/analytics`,
           {
             headers: {

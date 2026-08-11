@@ -41,7 +41,7 @@ EXPOSE 8080
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=30s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://localhost:8080/actuator/health || exit 1
+    CMD wget --no-verbose --tries=1 --spider "http://localhost:8080${APP_BASE_PATH}/actuator/health" || exit 1
 
 # Set default profile to dev (can be overridden by environment variable)
 ENV SPRING_PROFILES_ACTIVE=dev

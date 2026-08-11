@@ -5,11 +5,17 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      app_base_path:
+        description: "Frontend base path, for example /shortenit (empty for root)"
+        required: false
+        default: ""
 
 env:
   REGISTRY: docker.io
-  BACKEND_IMAGE: shortenit/backend
-  FRONTEND_IMAGE: shortenit/frontend
+  DOCKERHUB_NAMESPACE: ${{ vars.DOCKERHUB_NAMESPACE || 'shortenit' }}
+  BACKEND_IMAGE: ${{ vars.DOCKERHUB_NAMESPACE || 'shortenit' }}/backend
+  FRONTEND_IMAGE: ${{ vars.DOCKERHUB_NAMESPACE || 'shortenit' }}/frontend
 
 jobs:
   build-backend:
@@ -39,7 +45,7 @@ jobs:
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: shortenit
+          username: ${{ env.DOCKERHUB_NAMESPACE }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Extract Docker metadata
@@ -85,7 +91,7 @@ jobs:
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: shortenit
+          username: ${{ env.DOCKERHUB_NAMESPACE }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Extract Docker metadata
@@ -109,5 +115,8 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            APP_BASE_PATH=${{ inputs.app_base_path || vars.APP_BASE_PATH || '' }}
+            NEXT_PUBLIC_API_BASE_URL=http://backend:8080
           cache-from: type=gha,scope=frontend
           cache-to: type=gha,mode=max,scope=frontend

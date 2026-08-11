@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/components/auth-provider";
 import { useTheme } from "next-themes";
 import { Trash2, Copy, Check, Plus, Key, Eye, EyeOff, Terminal, ExternalLink } from "lucide-react";
+import { appFetch } from "@/lib/api";
 
 interface ApiKey {
   id: string;
@@ -49,7 +50,7 @@ export default function SettingsPage() {
     setLoadingKeys(true);
     try {
         const token = localStorage.getItem("auth-token");
-        const response = await fetch(`/api/users/me/api-keys`, {
+        const response = await appFetch(`/api/users/me/api-keys`, {
             headers: {
                 "Authorization": token ? `Bearer ${token}` : ""
             }
@@ -82,7 +83,7 @@ export default function SettingsPage() {
 
     try {
         const token = localStorage.getItem("auth-token");
-        const response = await fetch(`/api/users/me/api-keys`, {
+        const response = await appFetch(`/api/users/me/api-keys`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -124,7 +125,7 @@ export default function SettingsPage() {
 
     try {
         const token = localStorage.getItem("auth-token");
-        await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL || ""}/api/users/me/api-keys/${id}`, {
+        await appFetch(`/api/users/me/api-keys/${id}`, {
             method: "DELETE",
             headers: {
                 "Authorization": token ? `Bearer ${token}` : ""

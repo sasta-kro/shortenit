@@ -38,7 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
 
-        String path = request.getRequestURI();
+        String path = RequestPathUtils.getApplicationPath(request);
 
         // Skip JWT validation for public endpoints
         if (path.startsWith("/s/") ||

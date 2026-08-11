@@ -26,6 +26,10 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ARG NEXT_PUBLIC_API_BASE_URL=http://host.docker.internal:8080
 ENV NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL}
 
+# Next.js basePath is compiled into the frontend bundle at build time.
+ARG APP_BASE_PATH=""
+ENV APP_BASE_PATH=${APP_BASE_PATH}
+
 RUN corepack enable pnpm && pnpm run build
 
 # Production image, copy all the files and run next

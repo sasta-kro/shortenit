@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import Sidebar from "@/components/sidebar";
 import MobileMenu from "@/components/mobile-menu";
 import TopHeader from "@/components/top-header";
+import { withoutBasePath } from "@/lib/app-path";
 
 export default function LayoutWrapper({
   children,
@@ -12,7 +13,7 @@ export default function LayoutWrapper({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const isAuthPage = pathname?.startsWith("/auth");
+  const isAuthPage = withoutBasePath(pathname || "/").startsWith("/auth");
 
   if (isAuthPage) {
     return <>{children}</>;

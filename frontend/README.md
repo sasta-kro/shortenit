@@ -54,9 +54,14 @@ Create a `.env` file in the root directory and add the following variables:
 ```env
 # The base URL of your ShortenIt Backend API
 NEXT_PUBLIC_API_BASE_URL=http://localhost:8080
+APP_BASE_PATH=
 ```
 
 > **Note**: Ensure your backend service is running and accessible at the specified URL. You can check backend repository [here](https://github.com/Shortenit/shortenit-backend).
+
+Set `APP_BASE_PATH=/shortenit` to build or run the frontend under a URL prefix.
+The value must start with `/` and must not end with `/`. Next.js embeds this
+setting at build time, so changing it requires a new frontend build.
 
 ### 4. Run the Development Server
 
@@ -123,4 +128,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 Made with ❤️ for the Shortenit project
-

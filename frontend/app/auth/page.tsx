@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Link2, ArrowRight, Zap, BarChart3, QrCode, Shield } from "lucide-react";
+import { withBasePath } from "@/lib/app-path";
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -15,7 +16,7 @@ export default function LoginPage() {
 
   const handleMicrosoftLogin = () => {
     setIsLoading(true);
-    window.location.href = `/oauth2/authorization/microsoft`;
+    window.location.href = withBasePath("/oauth2/authorization/microsoft");
   };
 
   return (

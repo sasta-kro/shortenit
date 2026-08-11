@@ -88,6 +88,7 @@ A modern, full-featured URL shortening and analytics platform built with Spring 
    # Application
    SPRING_PROFILES_ACTIVE=dev
    APP_BASE_URL=http://localhost:3000
+   APP_BASE_PATH=
    JWT_SECRET=your_jwt_secret_min_32_chars
 
    # Microsoft OAuth2
@@ -139,6 +140,45 @@ A modern, full-featured URL shortening and analytics platform built with Spring 
    sudo nginx -t
    sudo systemctl reload nginx
    ```
+
+### Deploying Under a Path
+
+ShortenIt can run at the root of a domain or under a path such as
+`https://life.au.edu/shortenit`. Configure the public URL and path together:
+
+```bash
+APP_BASE_PATH=/shortenit
+APP_BASE_URL=https://life.au.edu${APP_BASE_PATH}
+CORS_ALLOWED_ORIGINS=https://life.au.edu
+```
+
+`APP_BASE_PATH` must be empty or start with `/`, and it must not end with `/`.
+The path in `APP_BASE_URL` must match it exactly. `CORS_ALLOWED_ORIGINS` contains
+only the origin and never includes `/shortenit`.
+
+The frontend base path is embedded during `next build`, so changing
+`APP_BASE_PATH` requires rebuilding the frontend image. The backend reads the
+same value at runtime. For a path deployment, use a frontend image built with
+that path and select the production images in `.env` when needed:
+
+```bash
+FRONTEND_IMAGE=your-dockerhub-name/frontend:latest
+BACKEND_IMAGE=your-dockerhub-name/backend:latest
+```
+
+The Docker publishing workflow reads `APP_BASE_PATH` and
+`DOCKERHUB_NAMESPACE` from GitHub repository variables. It uses the existing
+`DOCKERHUB_TOKEN` secret. A manual workflow run can override the frontend path.
+
+When using `/shortenit`, register this Microsoft Entra redirect URI:
+
+```text
+https://life.au.edu/shortenit/login/oauth2/code/microsoft
+```
+
+Add the locations from `shortenit-path.conf.example` to the existing HTTPS
+Nginx server block. Its backend `proxy_pass` directives preserve `/shortenit`
+because Spring Boot owns the context path.
 
 ## Available Commands
 
@@ -230,8 +270,9 @@ shortenit/
 ├── docker-compose.dev.yml   # Development overrides
 ├── docker-compose.prod.yml  # Production overrides
 ├── Makefile                 # Convenience commands
-├── .env.template            # Environment template
-└── shortenit.conf.example   # Nginx configuration
+├── .env.template               # Environment template
+├── shortenit.conf.example      # Full-domain Nginx configuration
+└── shortenit-path.conf.example # Path-based Nginx locations
 ```
 
 ## Database Schema
@@ -253,6 +294,7 @@ See `backend/erd_shorenit.png` for the full entity relationship diagram.
 Key application properties (configured via environment variables):
 
 - `APP_BASE_URL` - Base URL for short links
+- `APP_BASE_PATH` - Optional shared URL prefix, such as `/shortenit`
 - `JWT_SECRET` - Required secret key for JWT signing in Docker Compose (min 32 chars)
 - `MICROSOFT_CLIENT_ID` - Azure AD application ID
 - `MICROSOFT_CLIENT_SECRET` - Azure AD application secret
@@ -262,6 +304,10 @@ Key application properties (configured via environment variables):
 ### Frontend Configuration
 
 - `NEXT_PUBLIC_API_BASE_URL` - Backend API base URL
+
+`APP_BASE_PATH` is also used when building the frontend. It is exposed to
+browser code as `NEXT_PUBLIC_BASE_PATH`; users should configure
+`APP_BASE_PATH`, not the generated browser variable.
 
 ### GeoIP Database
 
@@ -316,7 +362,7 @@ Images are automatically built and pushed via GitHub Actions on every push to ma
 
 ## Monitoring & Health Checks
 
-- **Health Endpoint:** `/actuator/health`
+- **Health Endpoint:** `${APP_BASE_PATH}/actuator/health`
 - **Docker Health Checks:** Automatic container health monitoring
 - **Database Health:** Connection pool monitoring via Actuator
 

@@ -57,7 +57,7 @@ public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
 
-        String path = request.getRequestURI();
+        String path = RequestPathUtils.getApplicationPath(request);
 
         log.debug("Processing: {} {}", request.getMethod(), path);
 

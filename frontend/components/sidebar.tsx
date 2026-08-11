@@ -26,11 +26,13 @@ interface NavItem {
 
 import { useAuth } from "@/components/auth-provider";
 import { ShieldCheck } from "lucide-react";
+import { withoutBasePath } from "@/lib/app-path";
 
 export default function Sidebar() {
   const { user } = useAuth();
   const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname();
+  const appPathname = withoutBasePath(pathname || "/");
 
   const navItems: NavItem[] = [
     { label: "Home", icon: <Home size={20} />, href: "/" },
@@ -80,7 +82,7 @@ export default function Sidebar() {
       <nav className="flex-1 overflow-y-auto p-2 space-y-1">
         {navItems.map((item) => {
           const isActive =
-            pathname === item.href || pathname.startsWith(item.href + "/");
+            appPathname === item.href || appPathname.startsWith(item.href + "/");
           return (
             <Link key={item.href} href={item.href} className="block">
               <div
