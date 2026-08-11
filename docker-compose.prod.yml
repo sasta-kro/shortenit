@@ -9,9 +9,9 @@ services:
   frontend:
     image: ${FRONTEND_IMAGE:-shortenit/frontend:latest}
     ports: !override
-      - "127.0.0.1:3000:3000"
+      - "127.0.0.1:${FRONTEND_HOST_PORT:-3000}:3000"
 
   backend:
     image: ${BACKEND_IMAGE:-shortenit/backend:latest}
     ports: !override
-      - "127.0.0.1:8080:8080"
+      - "127.0.0.1:${BACKEND_HOST_PORT:-8080}:8080"
